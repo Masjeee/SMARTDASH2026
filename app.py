@@ -125,8 +125,8 @@ if not st.session_state.logged_in:
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
         
         # Logo atau Header Icon Login
-        st.markdown("<div class='login-title'>🔐 Smart Dash 2026</div>", unsafe_allow_html=True)
-        st.markdown("<div class='login-subtitle'>Astra Tol Tangerang-Merak</div>", unsafe_allow_html=True)
+        st.markdown("<div class='login-title'>SMARTDASH</div>", unsafe_allow_html=True)
+        st.markdown("<div class='login-subtitle'>Astra Infra Toll Road Tangerang-Merak</div>", unsafe_allow_html=True)
         
         with st.form("login_form"):
             username = st.text_input("Username", placeholder="Masukkan username Anda")

@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS untuk mempercantik tampilan
+# Custom CSS untuk merapikan estetika & tata letak
 st.markdown("""
     <style>
     .main {
@@ -66,13 +66,6 @@ st.markdown("""
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         border: 1px solid #e2e8f0;
     }
-    .login-title {
-        font-size: 26px;
-        font-weight: 700;
-        color: #1e293b;
-        text-align: center;
-        margin-bottom: 5px;
-    }
     .login-subtitle {
         font-size: 13px;
         color: #64748b;
@@ -110,26 +103,24 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 # Fungsi Render Logo Menggunakan Base64 (Aman & Stabil di Streamlit)
-def render_logo(svg_file="Logo.svg", width="250px"):
+def render_logo(svg_file="Logo.svg", width="250px", align="center"):
     if os.path.exists(svg_file):
         with open(svg_file, "r", encoding="utf-8") as f:
             svg_content = f.read()
         b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
         st.markdown(
-            f'<div style="text-align: center; margin-bottom: 10px;"><img src="data:image/svg+xml;base64,{b64}" width="{width}"/></div>',
+            f'<div style="text-align: {align}; margin-bottom: 5px;"><img src="data:image/svg+xml;base64,{b64}" width="{width}"/></div>',
             unsafe_allow_html=True
         )
     else:
-        st.markdown("<h2 style='text-align: center; color: #1e293b;'>📊 SMART DASH</h2>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='text-align: {align}; color: #1e293b;'>📊 SMART DASH</h2>", unsafe_allow_html=True)
 
 if not st.session_state.logged_in:
     st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1.3, 1])
     with col2:
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
-        
-        # Render Logo di Halaman Login
-        render_logo("Logo.svg", width="260px")
+        render_logo("Logo.svg", width="260px", align="center")
         st.markdown("<div class='login-subtitle'>Corporate Monitoring Dashboard</div>", unsafe_allow_html=True)
         
         with st.form("login_form"):
@@ -180,29 +171,19 @@ if error_msg:
     st.error(f"❌ Gagal memuat data live: {error_msg}")
 
 # ==========================================
-# 4. HEADER UTAMA DASHBOARD & LOGO
-# ==========================================
-col_h1, col_h2 = st.columns([1, 4])
-with col_h1:
-    render_logo("Logo.svg", width="200px")
-with col_h2:
-    st.markdown("<h2 style='color: #1e293b; margin-top: 10px;'>SMART DASHBOARD</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #64748b; font-size: 14px; margin-top: -15px;'>Astra Infra Toll Road Tangerang-Merak — Real-time Customer Feedback Monitoring</p>", unsafe_allow_html=True)
-
-st.markdown("---")
-
-# ==========================================
-# 5. SIDEBAR / FILTER UTAMA & LOGOUT
+# 4. SIDEBAR / TATA LETAK UTAMA & LOGOUT
 # ==========================================
 with st.sidebar:
+    # Letakkan Logo di Paling Atas Sidebar (Rapi & Profesional)
+    render_logo("Logo.svg", width="150px", align="center")
+    st.markdown("<br>", unsafe_allow_html=True)
+    
     st.write(f"👤 Halo, **{st.session_state.username.upper()}**")
     if st.button("Keluar (Logout)", use_container_width=True):
         st.session_state.logged_in = False
         st.rerun()
         
     st.markdown("---")
-    render_logo("Logo.svg", width="140px")
-    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
     
     if st.button("🔄 Refresh Data Cache"):
@@ -259,6 +240,18 @@ if not df_filtered.empty:
         df_user_filtered = df_filtered
 else:
     df_user_filtered = df_filtered
+
+# ==========================================
+# 5. HEADER UTAMA DASHBOARD
+# ==========================================
+col_h1, col_h2 = st.columns([1.2, 3.8])
+with col_h1:
+    render_logo("Logo.svg", width="210px", align="left")
+with col_h2:
+    st.markdown("<h2 style='color: #1e293b; margin-top: 0px; margin-bottom: 0px;'>SMART DASHBOARD</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #64748b; font-size: 13px; margin-top: 2px;'>Astra Infra Toll Road Tangerang-Merak — Real-time Customer Feedback Monitoring</p>", unsafe_allow_html=True)
+
+st.markdown("---")
 
 # ==========================================
 # 6. KARTU METRIK UTAMA

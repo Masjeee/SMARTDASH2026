@@ -252,10 +252,10 @@ else:
 # ==========================================
 col_h1, col_h2 = st.columns([1.2, 3.8])
 with col_h1:
-    render_logo("Logo.svg", width="210px", align="left")
-with col_h2:
-    st.markdown("<h2 style='color: #1e293b; margin-top: 0px; margin-bottom: 0px;'>SMART DASHBOARD</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #64748b; font-size: 13px; margin-top: 2px;'>Astra Infra Toll Road Tangerang-Merak — Real-time Customer Feedback Monitoring</p>", unsafe_allow_html=True)
+    
+    render_logo("Logo.svg", width="240px", align="center")
+        st.markdown("<h2 style='text-align: center; color: #1e293b; margin-top: 10px; margin-bottom: 0px;'>SMART DASHBOARD</h2>", unsafe_allow_html=True)
+        st.markdown("<p style='text-align: center; color: #64748b; font-size: 13px; margin-top: 2px;'>Astra Infra Toll Road Tangerang-Merak — Real-time Customer Feedback Monitoring</p>", unsafe_allow_html=True)
 
 st.markdown("---")
 

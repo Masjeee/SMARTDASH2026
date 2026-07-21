@@ -4,59 +4,9 @@ import plotly.express as px
 from datetime import datetime
 import os
 import base64
-import streamlit as st
-
-# Konfigurasi halaman harus di paling atas
-st.set_page_config(page_title="Smart Dash Login", page_icon="📊", layout="centered")
-
-# 1. DATABASE AKUN TERDAFTAR (Bisa kamu tambah/ubah sesuai kebutuhan)
-USER_CREDENTIALS = {
-    "zae": "astra2026",       # Username: zae, Password: astra2026
-    "admin_tamer": "tangerangmerak",
-    "pimpinan": "astrainfra"
-}
-
-# Inisialisasi status login di memori sesi Streamlit
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-
-# 2. HALAMAN LOGIN
-def show_login_page():
-    st.markdown("<h2 style='text-align: center;'>🔐 Login Smart Dash 2026</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: gray;'>Astra Tol Tangerang-Merak Corporate Monitoring</p>", unsafe_allow_html=True)
-    
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        with st.form("login_form"):
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
-            submit_button = st.form_submit_button("Masuk Dashboard", use_container_width=True)
-            
-            if submit_button:
-                if username in USER_CREDENTIALS and USER_CREDENTIALS[username] == password:
-                    st.session_state.logged_in = True
-                    st.session_state.username = username
-                    st.success("Login Berhasil! Memuat dashboard...")
-                    st.rerun()
-                else:
-                    st.error("Username atau Password salah!")
-
-# 3. KONTROL UTAMA APLIKASI
-if not st.session_state.logged_in:
-    show_login_page()
-else:
-    # --- MULAI KODE DASHBOARD UTAMA KAMU DI SINI ---
-    st.sidebar.write(f"👤 Halo, **{st.session_state.username.upper()}**")
-    if st.sidebar.button("Logout"):
-        st.session_state.logged_in = False
-        st.rerun()
-
-    # (Letakkan seluruh kode grafik, pembacaan google sheets, dan metrik dashboard kamu di bawah blok ini)
-    st.title("📊 Selamat Datang di Smart Dash Utama")
-    st.write("Dashboard aktif dan aman.")
 
 # ==========================================
-# 1. KONFIGURASI HALAMAN & THEME
+# 1. KONFIGURASI HALAMAN (HANYA SEKALI DI ATAS)
 # ==========================================
 st.set_page_config(
     page_title="SMART DASH",
@@ -74,7 +24,7 @@ st.markdown("""
     .metric-container {
         background-color: #ffffff;
         padding: 15px;
-        border-radius: 100px;
+        border-radius: 12px;
         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         border-left: 5px solid #0056b3;
         margin-bottom: 15px;
@@ -112,15 +62,56 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def render_svg(svg_file):
-    with open(svg_file, "r", encoding="utf-8") as f:
-        svg_content = f.read()
-    # Mengubah SVG menjadi data URI agar bisa dibaca komponen HTML Streamlit
-    b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
-    html = f'<img src="data:image/svg+xml;base64,{b64}" width="350"/>'
-    return html
+# ==========================================
+# 2. SISTEM AUTENTIKASI (LOGIN)
+# ==========================================
+USER_CREDENTIALS = {
+    "zae": "astra2026",
+    "admin_tamer": "tangerangmerak",
+    "pimpinan": "astrainfra"
+}
 
-# Cara menggunakannya di bagian Header Utama:
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# Jika BELUM LOGIN, tampilkan halaman login terpisah secara bersih
+if not st.session_state.logged_in:
+    st.markdown("<br><br><br>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>🔐 Login Smart Dash 2026</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: gray;'>Astra Tol Tangerang-Merak Corporate Monitoring</p>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 1.2, 1])
+    with col2:
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submit_button = st.form_submit_button("Masuk Dashboard", use_container_width=True)
+            
+            if submit_button:
+                if username in USER_CREDENTIALS and USER_CREDENTIALS[username] == password:
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.success("Login Berhasil! Memuat dashboard...")
+                    st.rerun()
+                else:
+                    st.error("Username atau Password salah!")
+                    
+    # Hentikan eksekusi agar isi dashboard di bawah tidak bocor ke halaman login
+    st.stop()
+
+# ==========================================
+# 3. FUNGSI PENDUKUNG & RENDER LOGO
+# ==========================================
+def render_svg(svg_file):
+    if os.path.exists(svg_file):
+        with open(svg_file, "r", encoding="utf-8") as f:
+            svg_content = f.read()
+        b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
+        return f'<img src="data:image/svg+xml;base64,{b64}" width="350"/>'
+    return "<h1 style='color: #1e293b; margin-bottom: 0px;'>📊 SMART DASH</h1>"
+
+# Header Utama Logo
 logo_path = "Logo.svg"
 if os.path.exists(logo_path):
     st.markdown(render_svg(logo_path), unsafe_allow_html=True)
@@ -130,7 +121,7 @@ else:
 st.markdown("---")
 
 # ==========================================
-# 2. FUNGSI PEMUATAN DATA (LOAD DATA)
+# 4. FUNGSI PEMUATAN DATA (LOAD DATA)
 # ==========================================
 @st.cache_data(ttl=600)
 def load_data():
@@ -144,7 +135,6 @@ def load_data():
         df_dm['Tanggal'] = pd.to_datetime(df_dm['Tanggal'], errors='coerce').dt.date
         df_comment['Tanggal'] = pd.to_datetime(df_comment['Tanggal'], errors='coerce').dt.date
         
-        # Penanganan kolom tonality secara aman
         df_dm['Tonality'] = df_dm['Klasifikasi_Manual'] if 'Klasifikasi_Manual' in df_dm.columns else "Neutral"
         df_comment['Tonality'] = df_comment['Klasifikasi_Manual'] if 'Klasifikasi_Manual' in df_comment.columns else "Neutral"
         
@@ -160,11 +150,17 @@ if error_msg:
     st.error(f"❌ Gagal memuat data live: {error_msg}")
 
 # ==========================================
-# 3. SIDEBAR / FILTER UTAMA
+# 5. SIDEBAR / FILTER UTAMA & LOGOUT
 # ==========================================
 with st.sidebar:
+    st.write(f"👤 Halo, **{st.session_state.username.upper()}**")
+    if st.button("Keluar (Logout)", use_container_width=True):
+        st.session_state.logged_in = False
+        st.rerun()
+        
+    st.markdown("---")
+    
     if os.path.exists("Logo.svg"):
-        # Kita buat fungsi kecil atau sesuaikan width-nya lewat HTML
         with open("Logo.svg", "r", encoding="utf-8") as f:
             svg_content = f.read()
         b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
@@ -173,7 +169,6 @@ with st.sidebar:
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
     
-    # Tombol Refresh Cache Manual
     if st.button("🔄 Refresh Data Cache"):
         st.cache_data.clear()
         st.rerun()
@@ -230,7 +225,7 @@ else:
     df_user_filtered = df_filtered
 
 # ==========================================
-# 4. KARTU METRIK UTAMA
+# 6. KARTU METRIK UTAMA
 # ==========================================
 st.subheader("Kategori Komplain")
 col1, col2, col3 = st.columns(3)
@@ -281,7 +276,7 @@ with col_neg:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ==========================================
-# 5. VISUALISASI GRAFIK & DIAGRAM (3 KOLOM SEJAJAR)
+# 7. VISUALISASI GRAFIK & DIAGRAM
 # ==========================================
 st.subheader("Analisis Visual Komplain & Sentimen")
 chart_col1, chart_col2, chart_col3 = st.columns(3)
@@ -344,7 +339,7 @@ with chart_col3:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ==========================================
-# 6. SLIDE TOP PEMBAHASAN + SAMPLE KOMPLAIN LIVE
+# 8. TOP PEMBAHASAN PER KATEGORI
 # ==========================================
 st.markdown(f"### 🔝 Top Pembahasan per Kategori Utama (Sumber: {sumber_analisis})")
 st.markdown("Berikut adalah topik keluhan terbanyak beserta *contoh keluhan langsung* dari pengguna jalan:")
@@ -481,7 +476,7 @@ with topic_col3:
 st.markdown("<br><hr>", unsafe_allow_html=True)
 
 # ==========================================
-# 7. TABEL DETAIL DATA YANG INTERAKTIF
+# 9. TABEL DETAIL DATA
 # ==========================================
 st.subheader("📋 Detail Data Mentah & Komentar")
 tab_dm, tab_komen = st.tabs(["💬 Data Mentah DM", "💬 Data Komentar"])

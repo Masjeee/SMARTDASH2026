@@ -3,7 +3,6 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime
 import os
-import base64
 
 # ==========================================
 # 1. KONFIGURASI HALAMAN (HANYA SEKALI DI ATAS)
@@ -15,7 +14,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS untuk mempercantik tampilan dashboard
+# Custom CSS untuk mempercantik tampilan
 st.markdown("""
     <style>
     .main {
@@ -59,6 +58,41 @@ st.markdown("""
         border-left: 3px solid #cbd5e1;
         display: block;
     }
+    .login-card {
+        background-color: #ffffff;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: 1px solid #e2e8f0;
+    }
+    .login-title {
+        font-size: 26px;
+        font-weight: 700;
+        color: #1e293b;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .login-subtitle {
+        font-size: 13px;
+        color: #64748b;
+        text-align: center;
+        margin-bottom: 25px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    div.stButton > button:first-child {
+        background-color: #0056b3;
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        border: none;
+        padding: 10px 20px;
+        transition: all 0.3s ease;
+    }
+    div.stButton > button:first-child:hover {
+        background-color: #004085;
+        box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -74,59 +108,27 @@ USER_CREDENTIALS = {
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-# Jika BELUM LOGIN, tampilkan halaman login yang elegan
-if not st.session_state.logged_in:
-    # Styling khusus halaman login agar lebih hidup dan berkelas
-    st.markdown("""
-        <style>
-        .login-card {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-        }
-        .login-title {
-            font-size: 26px;
-            font-weight: 700;
-            color: #1e293b;
-            text-align: center;
-            margin-bottom: 5px;
-        }
-        .login-subtitle {
-            font-size: 13px;
-            color: #64748b;
-            text-align: center;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        /* Kustomisasi tombol login Streamlit */
-        div.stButton > button:first-child {
-            background-color: #0056b3;
-            color: white;
-            font-weight: 600;
-            border-radius: 8px;
-            border: none;
-            padding: 10px 20px;
-            transition: all 0.3s ease;
-        }
-        div.stButton > button:first-child:hover {
-            background-color: #004085;
-            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
-        }
-        </style>
-    """, unsafe_allow_html=True)
+# Fungsi Universal Render Logo SVG
+def render_logo(svg_file="Logo.svg", width="100%"):
+    if os.path.exists(svg_file):
+        with open(svg_file, "r", encoding="utf-8") as f:
+            svg_content = f.read()
+        # Menyisipkan width ke dalam tag svg secara aman
+        if "width=" not in svg_content:
+            svg_content = svg_content.replace("<svg", f'<svg width="{width}"')
+        st.markdown(f'<div style="text-align: center; margin-bottom: 15px;">{svg_content}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("<h2 style='text-align: center; color: #1e293b;'>📊 SMART DASH</h2>", unsafe_allow_html=True)
 
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    
+if not st.session_state.logged_in:
+    st.markdown("<br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 1.3, 1])
     with col2:
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
         
-        # Logo atau Header Icon Login
-        st.markdown("<div class='login-title'>SMARTDASH</div>", unsafe_allow_html=True)
-        st.markdown("<div class='login-subtitle'>Astra Infra Toll Road Tangerang-Merak</div>", unsafe_allow_html=True)
+        # Render Logo di Halaman Login
+        render_logo("Logo.svg", width="280px")
+        st.markdown("<div class='login-subtitle'>Corporate Monitoring Dashboard</div>", unsafe_allow_html=True)
         
         with st.form("login_form"):
             username = st.text_input("Username", placeholder="Masukkan username Anda")
@@ -144,25 +146,10 @@ if not st.session_state.logged_in:
                     st.error("Username atau Password salah!")
                     
         st.markdown('</div>', unsafe_allow_html=True)
-                    
     st.stop()
-    
-# ==========================================
-# 3. FUNGSI PENDUKUNG & RENDER LOGO
-# ==========================================
-def render_logo(svg_file):
-    if os.path.exists(svg_file):
-        # Membaca file SVG dan merendernya via tag object/html langsung
-        with open(svg_file, "r", encoding="utf-8") as f:
-            svg_content = f.read()
-        return st.markdown(f'<div style="text-align: center; margin-bottom: 10px;">{svg_content}</div>', unsafe_allow_html=True)
-    return st.markdown("<h2 style='text-align: center; color: #1e293b;'>📊 SMART DASH</h2>", unsafe_allow_html=True)
-    render_logo("Logo.svg")
-
-st.markdown("---")
 
 # ==========================================
-# 4. FUNGSI PEMUATAN DATA (LOAD DATA)
+# 3. PEMUATAN DATA (LOAD DATA)
 # ==========================================
 @st.cache_data(ttl=600)
 def load_data():
@@ -191,6 +178,18 @@ if error_msg:
     st.error(f"❌ Gagal memuat data live: {error_msg}")
 
 # ==========================================
+# 4. HEADER UTAMA DASHBOARD & LOGO
+# ==========================================
+col_h1, col_h2 = st.columns([1, 4])
+with col_h1:
+    render_logo("Logo.svg", width="220px")
+with col_h2:
+    st.markdown("<h2 style='color: #1e293b; margin-top: 10px;'>SMART DASHBOARD</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #64748b; font-size: 14px; margin-top: -15px;'>Astra Infra Toll Road Tangerang-Merak — Real-time Customer Feedback Monitoring</p>", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# ==========================================
 # 5. SIDEBAR / FILTER UTAMA & LOGOUT
 # ==========================================
 with st.sidebar:
@@ -200,13 +199,7 @@ with st.sidebar:
         st.rerun()
         
     st.markdown("---")
-    
-    if os.path.exists("Logo.svg"):
-        with open("Logo.svg", "r", encoding="utf-8") as f:
-            svg_content = f.read()
-        b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
-        st.markdown(f'<img src="data:image/svg+xml;base64,{b64}" width="200"/>', unsafe_allow_html=True)
-    
+    render_logo("Logo.svg", width="150px")
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
     
@@ -466,7 +459,6 @@ def get_top_topics_with_sample(df, category_name, top_n=3):
                     
         return results
     except Exception as e:
-        st.error(f"Error di {category_name}: {str(e)}")
         return []
 
 with topic_col1:

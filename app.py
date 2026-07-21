@@ -110,7 +110,7 @@ if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
 # Fungsi Render Logo Menggunakan Base64 (Aman & Stabil di Streamlit)
-def render_logo(svg_file="Logo.svg", width="250px", align="left"):
+def render_logo(svg_file="Logo.svg", width="250px", align="center"):
     if os.path.exists(svg_file):
         with open(svg_file, "r", encoding="utf-8") as f:
             svg_content = f.read()
@@ -128,7 +128,7 @@ if not st.session_state.logged_in:
     with col2:
         st.markdown('<div class="login-card">', unsafe_allow_html=True)
         render_logo("Logo.svg", width="260px", align="center")
-        st.markdown("<div class='login-subtitle'>Monitoring Real-time</div>", unsafe_allow_html=True)
+        st.markdown("<div class='login-subtitle'>Corporate Monitoring Dashboard</div>", unsafe_allow_html=True)
         
         with st.form("login_form"):
             username = st.text_input("Username", placeholder="Masukkan username Anda")

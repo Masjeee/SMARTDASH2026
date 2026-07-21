@@ -150,20 +150,14 @@ if not st.session_state.logged_in:
 # ==========================================
 # 3. FUNGSI PENDUKUNG & RENDER LOGO
 # ==========================================
-def render_svg(svg_file):
+def render_logo(svg_file):
     if os.path.exists(svg_file):
+        # Membaca file SVG dan merendernya via tag object/html langsung
         with open(svg_file, "r", encoding="utf-8") as f:
             svg_content = f.read()
-        b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
-        return f'<img src="data:image/svg+xml;base64,{b64}" width="350"/>'
-    return "<h1 style='color: #1e293b; margin-bottom: 0px;'>📊 SMART DASH</h1>"
-
-# Header Utama Logo
-logo_path = "Logo.svg"
-if os.path.exists(logo_path):
-    st.markdown(render_svg(logo_path), unsafe_allow_html=True)
-else:
-    st.markdown("<h1 style='color: #1e293b; margin-bottom: 0px;'>📊 SMART DASH</h1>", unsafe_allow_html=True)
+        return st.markdown(f'<div style="text-align: center; margin-bottom: 10px;">{svg_content}</div>', unsafe_allow_html=True)
+    return st.markdown("<h2 style='text-align: center; color: #1e293b;'>📊 SMART DASH</h2>", unsafe_allow_html=True)
+    render_logo("Logo.svg")
 
 st.markdown("---")
 

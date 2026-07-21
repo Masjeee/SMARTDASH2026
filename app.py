@@ -74,18 +74,64 @@ USER_CREDENTIALS = {
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 
-# Jika BELUM LOGIN, tampilkan halaman login terpisah secara bersih
+# Jika BELUM LOGIN, tampilkan halaman login yang elegan
 if not st.session_state.logged_in:
-    st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("<h2 style='text-align: center;'>🔐 Login Smart Dash 2026</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: gray;'>Astra Tol Tangerang-Merak Corporate Monitoring</p>", unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
+    # Styling khusus halaman login agar lebih hidup dan berkelas
+    st.markdown("""
+        <style>
+        .login-card {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .login-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .login-subtitle {
+            font-size: 13px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        /* Kustomisasi tombol login Streamlit */
+        div.stButton > button:first-child {
+            background-color: #0056b3;
+            color: white;
+            font-weight: 600;
+            border-radius: 8px;
+            border: none;
+            padding: 10px 20px;
+            transition: all 0.3s ease;
+        }
+        div.stButton > button:first-child:hover {
+            background-color: #004085;
+            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([1, 1.2, 1])
+    col1, col2, col3 = st.columns([1, 1.3, 1])
     with col2:
+        st.markdown('<div class="login-card">', unsafe_allow_html=True)
+        
+        # Logo atau Header Icon Login
+        st.markdown("<div class='login-title'>🔐 Smart Dash 2026</div>", unsafe_allow_html=True)
+        st.markdown("<div class='login-subtitle'>Astra Tol Tangerang-Merak</div>", unsafe_allow_html=True)
+        
         with st.form("login_form"):
-            username = st.text_input("Username")
-            password = st.text_input("Password", type="password")
+            username = st.text_input("Username", placeholder="Masukkan username Anda")
+            password = st.text_input("Password", type="password", placeholder="Masukkan password Anda")
+            st.markdown("<br>", unsafe_allow_html=True)
             submit_button = st.form_submit_button("Masuk Dashboard", use_container_width=True)
             
             if submit_button:
@@ -97,9 +143,10 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Username atau Password salah!")
                     
-    # Hentikan eksekusi agar isi dashboard di bawah tidak bocor ke halaman login
+        st.markdown('</div>', unsafe_allow_html=True)
+                    
     st.stop()
-
+    
 # ==========================================
 # 3. FUNGSI PENDUKUNG & RENDER LOGO
 # ==========================================

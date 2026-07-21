@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from datetime import datetime
 import os
+import base64
 
 # ==========================================
 # 1. KONFIGURASI HALAMAN & THEME
@@ -61,24 +62,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Logo dan Headline
-logo_path = "logo.svg"
-LOGO_WIDTH = 350  
+def render_svg(svg_file):
+    with open(svg_file, "r", encoding="utf-8") as f:
+        svg_content = f.read()
+    # Mengubah SVG menjadi data URI agar bisa dibaca komponen HTML Streamlit
+    b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
+    html = f'<img src="data:image/svg+xml;base64,{b64}" width="350"/>'
+    return html
 
+# Cara menggunakannya di bagian Header Utama:
+logo_path = "Logo.svg"
 if os.path.exists(logo_path):
-    st.image(logo_path, width=LOGO_WIDTH)
+    st.markdown(render_svg(logo_path), unsafe_allow_html=True)
 else:
-    st.markdown("<h1 style='color: #1e293b; margin-bottom: 0px;'>📊</h1>", unsafe_allow_html=True)
-
-st.markdown(
-    "<h1 style='text-align: left; color: #1e293b; margin-top: 15px; margin-bottom: 0px; font-size: 80px; font-weight: bold;'>SMART DASH</h1>", 
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    "<h4 style='text-align: left; color: #64748b; font-weight: normal; margin-top: 5px; margin-bottom: 40px;'>Sistem Manajemen Aduan Real Time & Database Terintegrasi Astra Tol Tamer</h4>", 
-    unsafe_allow_html=True
-)
+    st.markdown("<h1 style='color: #1e293b; margin-bottom: 0px;'>📊 SMART DASH</h1>", unsafe_allow_html=True)
 
 st.markdown("---")
 
@@ -116,8 +113,13 @@ if error_msg:
 # 3. SIDEBAR / FILTER UTAMA
 # ==========================================
 with st.sidebar:
-    if os.path.exists("logo.svg"):
-        st.image("logo.svg", width=200)
+    if os.path.exists("Logo.svg"):
+        # Kita buat fungsi kecil atau sesuaikan width-nya lewat HTML
+        with open("Logo.svg", "r", encoding="utf-8") as f:
+            svg_content = f.read()
+        b64 = base64.b64encode(svg_content.encode("utf-8")).decode("utf-8")
+        st.markdown(f'<img src="data:image/svg+xml;base64,{b64}" width="200"/>', unsafe_allow_html=True)
+    
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
     

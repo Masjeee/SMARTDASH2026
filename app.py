@@ -4,6 +4,56 @@ import plotly.express as px
 from datetime import datetime
 import os
 import base64
+import streamlit as st
+
+# Konfigurasi halaman harus di paling atas
+st.set_page_config(page_title="Smart Dash Login", page_icon="📊", layout="centered")
+
+# 1. DATABASE AKUN TERDAFTAR (Bisa kamu tambah/ubah sesuai kebutuhan)
+USER_CREDENTIALS = {
+    "zae": "astra2026",       # Username: zae, Password: astra2026
+    "admin_tamer": "tangerangmerak",
+    "pimpinan": "astrainfra"
+}
+
+# Inisialisasi status login di memori sesi Streamlit
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# 2. HALAMAN LOGIN
+def show_login_page():
+    st.markdown("<h2 style='text-align: center;'>🔐 Login Smart Dash 2026</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: gray;'>Astra Tol Tangerang-Merak Corporate Monitoring</p>", unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submit_button = st.form_submit_button("Masuk Dashboard", use_container_width=True)
+            
+            if submit_button:
+                if username in USER_CREDENTIALS and USER_CREDENTIALS[username] == password:
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.success("Login Berhasil! Memuat dashboard...")
+                    st.rerun()
+                else:
+                    st.error("Username atau Password salah!")
+
+# 3. KONTROL UTAMA APLIKASI
+if not st.session_state.logged_in:
+    show_login_page()
+else:
+    # --- MULAI KODE DASHBOARD UTAMA KAMU DI SINI ---
+    st.sidebar.write(f"👤 Halo, **{st.session_state.username.upper()}**")
+    if st.sidebar.button("Logout"):
+        st.session_state.logged_in = False
+        st.rerun()
+
+    # (Letakkan seluruh kode grafik, pembacaan google sheets, dan metrik dashboard kamu di bawah blok ini)
+    st.title("📊 Selamat Datang di Smart Dash Utama")
+    st.write("Dashboard aktif dan aman.")
 
 # ==========================================
 # 1. KONFIGURASI HALAMAN & THEME

@@ -62,7 +62,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Logo dan Headline
-logo_path = "assets/SVG/logo.svg"
+logo_path = "logo.svg"
 LOGO_WIDTH = 350  
 
 if os.path.exists(logo_path):
@@ -116,8 +116,8 @@ if error_msg:
 # 3. SIDEBAR / FILTER UTAMA
 # ==========================================
 with st.sidebar:
-    if os.path.exists("assets/SVG/logo.svg"):
-        st.image("assets/SVG/logo.svg", width=200)
+    if os.path.exists("logo.svg"):
+        st.image("logo.svg", width=200)
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
     

@@ -4,6 +4,7 @@ import plotly.express as px
 from datetime import datetime
 import os
 import base64
+from streamlit_autorefresh import st_autorefresh
 
 # ==========================================
 # 1. KONFIGURASI HALAMAN (HANYA SEKALI DI ATAS)
@@ -15,10 +16,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-from streamlit_autorefresh import st_autorefresh
-
-# Mengatur auto-refresh setiap 30 detik (30000 milidetik)
-# Nilai ini bisa kamu sesuaikan (misal: 60000 untuk 1 menit)
 count = st_autorefresh(interval=30000, key="datarefreshcounter")
 
 # Custom CSS untuk merapikan estetika & tata letak

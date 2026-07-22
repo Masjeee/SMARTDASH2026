@@ -107,7 +107,7 @@ st.markdown("""
 def load_credentials_from_sheet():
     try:
         # Masukkan link CSV Publish to Web dari tab AKUN_ADMIN kamu di sini
-        URL_AKUN = "MASUKKAN_LINK_CSV_AKUN_ADMIN_DISINI"
+        URL_AKUN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5yBJlYrdU2-FhV_xWuZg0hLJsdbfsrW-q1Y-gdmTlqA8LDX_PXWsRkZewXbvpmlnIuW702Ajamgm5/pub?gid=1272034771&single=true&output=csv"
         df_akun = pd.read_csv(URL_AKUN)
         
         # Membersihkan spasi pada nama kolom dan isinya

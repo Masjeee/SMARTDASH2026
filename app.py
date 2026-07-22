@@ -177,6 +177,32 @@ df_dm, df_comment, error_msg = load_data()
 if error_msg:
     st.error(f"❌ Gagal memuat data live: {error_msg}")
 
+def auto_categorize(text):
+    if pd.isna(text):
+        return "Lainnya"
+    
+    text = str(text).lower()
+    
+    # Keyword Mapping
+    lalin_keywords = ['macet', 'padat', 'antrean', 'antrian', 'gerbang', 'etoll', 'e-toll', 'saldo', 'emoney', 'e-money', 'flazz', 'brizzi', 'tap', 'gardu', 'petugas', 'patroli', 'derek', 'kecelakaan', 'laka', 'contraflow']
+    fasilitas_keywords = ['rest area', 'restarea', 'toilet', 'kamar mandi', 'mushola', 'masjid', 'spbu', 'bbm', 'parkir', 'lampu', 'penerangan', 'pju', 'lubang', 'aspal', 'rambu', 'guardrail', 'sampah', 'kebersihan', 'genangan']
+    struk_keywords = ['struk', 'receipt', 'digital', 'cetak', 'download', 'unduh', 'riwayat', 'mutasi', 'slip', 'email', 'gagal kirim']
+    
+    # Cek kecocokan keyword
+    for kw in lalin_keywords:
+        if kw in text:
+            return "Lalu Lintas"
+            
+    for kw in fasilitas_keywords:
+        if kw in text:
+            return "Fasilitas"
+            
+    for kw in struk_keywords:
+        if kw in text:
+            return "Struk Digital"
+            
+    return "Lainnya"
+    
 # ==========================================
 # 4. SIDEBAR / TATA LETAK UTAMA & LOGOUT
 # ==========================================

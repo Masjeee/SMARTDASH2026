@@ -103,11 +103,22 @@ st.markdown("""
 # ==========================================
 # 2. SISTEM AUTENTIKASI (LOGIN)
 # ==========================================
-USER_CREDENTIALS = {
-    "zae": "astra2026",
-    "admin_tamer": "tangerangmerak",
-    "pimpinan": "astrainfra"
-}
+@st.cache_data(ttl=60)
+def load_credentials_from_sheet():
+    try:
+        # Masukkan link CSV Publish to Web dari tab AKUN_ADMIN kamu di sini
+        URL_AKUN = "MASUKKAN_LINK_CSV_AKUN_ADMIN_DISINI"
+        df_akun = pd.read_csv(URL_AKUN)
+        
+        # Membersihkan spasi pada nama kolom dan isinya
+        df_akun.columns = df_akun.columns.str.strip().str.lower()
+        
+        return dict(zip(df_akun['username'].astype(str).str.strip(), df_akun['password'].astype(str).str.strip()))
+    except Exception as e:
+        # Fallback akun darurat jika koneksi sheet gagal
+        return {"zae": "astra2026"}
+
+USER_CREDENTIALS = load_credentials_from_sheet()
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False

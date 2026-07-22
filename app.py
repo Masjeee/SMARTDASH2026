@@ -171,7 +171,7 @@ def load_data():
 
         df_dm = df_dm.drop_duplicates(subset=['Tanggal', 'Pengirim', 'Isi Pesan'], keep='first')
 
-    return df_dm, df_comment, None
+        return df_dm, df_comment, None
         
     except Exception as e:
         df_dummy_dm = pd.DataFrame(columns=["Tanggal", "Waktu", "Nama Chat/Grup", "Pengirim", "Isi Pesan", "Kategori", "Topik Unik", "Tonality"])

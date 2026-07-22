@@ -15,6 +15,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+from streamlit_autorefresh import st_autorefresh
+
+# Mengatur auto-refresh setiap 30 detik (30000 milidetik)
+# Nilai ini bisa kamu sesuaikan (misal: 60000 untuk 1 menit)
+count = st_autorefresh(interval=30000, key="datarefreshcounter")
+
 # Custom CSS untuk merapikan estetika & tata letak
 st.markdown("""
     <style>
@@ -217,10 +223,6 @@ with st.sidebar:
         
     st.markdown("---")
     st.markdown("### Filter Dashboard", unsafe_allow_html=True)
-    
-    if st.button("🔄 Refresh Data Cache"):
-        st.cache_data.clear()
-        st.rerun()
 
 sumber_analisis = st.sidebar.radio(
     "Pilih Sumber Analisis Topik:",

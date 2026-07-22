@@ -159,17 +159,20 @@ def load_data():
     try:
         URL_DM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5yBJlYrdU2-FhV_xWuZg0hLJsdbfsrW-q1Y-gdmTlqA8LDX_PXWsRkZewXbvpmlnIuW702Ajamgm5/pub?gid=194885921&single=true&output=csv"
         URL_KOMENTAR = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5yBJlYrdU2-FhV_xWuZg0hLJsdbfsrW-q1Y-gdmTlqA8LDX_PXWsRkZewXbvpmlnIuW702Ajamgm5/pub?gid=736850477&single=true&output=csv"
-        
+
         df_dm = pd.read_csv(URL_DM)
         df_comment = pd.read_csv(URL_KOMENTAR)
 
         df_dm['Tanggal'] = pd.to_datetime(df_dm['Tanggal'], errors='coerce').dt.date
         df_comment['Tanggal'] = pd.to_datetime(df_comment['Tanggal'], errors='coerce').dt.date
-        
+
         df_dm['Tonality'] = df_dm['Klasifikasi_Manual'] if 'Klasifikasi_Manual' in df_dm.columns else "Neutral"
         df_comment['Tonality'] = df_comment['Klasifikasi_Manual'] if 'Klasifikasi_Manual' in df_comment.columns else "Neutral"
+
+        df_dm = df_dm.drop_duplicates(subset=['Tanggal', 'Pengirim', 'Isi Pesan'], keep='first')
+
+    return df_dm, df_comment, None
         
-        return df_dm, df_comment, None
     except Exception as e:
         df_dummy_dm = pd.DataFrame(columns=["Tanggal", "Waktu", "Nama Chat/Grup", "Pengirim", "Isi Pesan", "Kategori", "Topik Unik", "Tonality"])
         df_dummy_comment = pd.DataFrame(columns=["Tanggal", "Waktu", "Nama Pengirim", "Kategori", "Isi Komentar", "Topik Unik", "Tonality"])

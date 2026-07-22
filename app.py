@@ -154,7 +154,7 @@ if not st.session_state.logged_in:
 # ==========================================
 # 3. PEMUATAN DATA (LOAD DATA)
 # ==========================================
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=60)
 def load_data():
     try:
         URL_DM = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5yBJlYrdU2-FhV_xWuZg0hLJsdbfsrW-q1Y-gdmTlqA8LDX_PXWsRkZewXbvpmlnIuW702Ajamgm5/pub?gid=194885921&single=true&output=csv"
